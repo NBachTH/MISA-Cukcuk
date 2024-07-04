@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <img src="./resource/toggle.png" alt="Menu Icon" class="menu-icon">
+            <div class="logo">
+                <img src="./resource/cukcuk-logo.png" alt="Logo">
+                <h1>Chi nhánh Hà Nội</h1>
+            </div>
+        </div>
+        <div class="user-info">
+            <span>Nguyễn Văn Mạnh</span>
+            <img src="./resource/default-avatar.jpg" alt="User Avatar">
+        </div>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link" data-target="home">Trang chủ</a></li>
+                    <li><a href="#" class="nav-link" data-target="reports">Báo cáo</a></li>
+                    <li><a href="#" class="nav-link" data-target="staff">Nhân viên</a></li>
+                    <li><a href="#" class="nav-link" data-target="settings">Cài đặt</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main>
+            <div class="toolbar">
+                <h1>Quản lý nhân viên</h1>
+                <button class="add">Thêm mới</button>
+            </div>
+
+            <section class="content" id="content">
+                <!-- Initial content (home page or staff list) will be loaded here -->
+            </section>
+        </main>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Load the initial content
+            loadPage('./page/staffManagement/staff-Management.html');
+
+            // Handle navigation link clicks
+            $('.nav-link').click(function (e) {
+                e.preventDefault();
+                const target = $(this).data('target');
+                loadPage(target + '.html');
+            });
+
+            // Function to load a page
+            function loadPage(page) {
+                $('#content').load(page, function (response, status, xhr) {
+                    if (status == "error") {
+                        $('#content').html('<p>Error loading page.</p>');
+                    }
+                });
+            }
+
+            // Handle row click to navigate to the staff info page
+            $(document).on('click', 'tbody tr', function () {
+                // const employeeId = $(this).data('id');
+                loadPage('./page/staffInfor/staff-Info.html');
+            });
+
+            // Handle cancel button click in the staff info page
+            $(document).on('click', '#cancel-btn', function () {
+                loadPage('./page/staffManagement/staff-Management.html');
+            });
+
+            // Function to extract query parameters
+            function getQueryParams() {
+                const params = {};
+                window.location.search.substring(1).split('&').forEach(function (param) {
+                    const [key, value] = param.split('=');
+                    params[key] = decodeURIComponent(value);
+                });
+                return params;
+            }
+
+            // When the staff info page is loaded
+            $(document).on('load', './page/staffInfor/staff-Info.html', function () {
+                const params = getQueryParams();
+                const employeeId = params['employeeId'];
+                if (employeeId) {
+                    // Load employee data based on employeeId
+                    console.log('Loading data for employee ID:', employeeId);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
